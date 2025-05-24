@@ -1,0 +1,15 @@
+FROM denoland/deno:1.40.0
+
+WORKDIR /app
+
+# Copier les fichiers de configuration
+COPY deno.json ./
+COPY . .
+
+# Cache avec import map
+RUN deno cache --import-map=deno.json apps/design-system/__registry__/index.tsx
+
+# Variables d'environnement pour Railway
+ENV PORT=8000
+
+CMD ["deno", "run", "--allow-net", "--allow-env", "--allow-read", "--import-map=deno.json", "main.ts"]
